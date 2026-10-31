@@ -23,10 +23,6 @@ Unity **6000.3.9f1** ile açılır. Sahne: `Assets/_Game/Scenes`. Arayüz koddan
 
 `ArtSource` klasörü bazı görsellerin ve seslerin üretim kaynaklarını içerir; oyunu çalıştırmak için gerekli değildir.
 
-### Yapımcı
-
-Osman Furkan Sezgin: geliştirici ve tasarımcı
-
 ## English
 
 Second Chance Workshop is a small 2D workshop game about turning waste into useful things. You take over the neighbourhood's repair shop. Every morning a truck brings the waste, and you clean and repair it, transform it with scissors and a saw, and craft the products your customers ask for.
@@ -45,7 +41,3 @@ The game lasts six days. Each product needs materials with the right properties,
 Open it with Unity **6000.3.9f1**. The scene is in `Assets/_Game/Scenes`. The UI is built from code, and the game content lives in the JSON files under `Assets/_Game/Resources/Data`. The game can be played in Turkish and English.
 
 The `ArtSource` folder holds the sources used to generate some of the art and audio. It is not needed to run the game.
-
-### Credits
-
-Osman Furkan Sezgin: developer and designer
