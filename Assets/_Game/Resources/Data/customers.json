@@ -1,0 +1,10 @@
+{
+  "customers": [
+    { "id": "zeynep", "portrait": "Sprites/Customers/zeynep" },
+    { "id": "hatice_teyze", "portrait": "Sprites/Customers/hatice_teyze" },
+    { "id": "recep_amca", "portrait": "Sprites/Customers/recep_amca" },
+    { "id": "deniz", "portrait": "Sprites/Customers/deniz" },
+    { "id": "kemal_usta", "portrait": "Sprites/Customers/kemal_usta" },
+    { "id": "muhtar_selma", "portrait": "Sprites/Customers/muhtar_selma" }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "items": [
+    { "id": "water_bottle", "material": "plastic", "tags": ["container", "transparent", "long"], "dirtLevel": 2, "sprite": "Sprites/Items/water_bottle" },
+    { "id": "glass_jar", "material": "glass", "tags": ["container", "transparent", "round", "heavy"], "dirtLevel": 3, "sprite": "Sprites/Items/glass_jar" },
+    { "id": "glass_bottle", "material": "glass", "tags": ["container", "transparent", "long", "heavy"], "dirtLevel": 3, "sprite": "Sprites/Items/glass_bottle" },
+    { "id": "tin_can", "material": "metal", "tags": ["container", "round", "sturdy"], "dirtLevel": 3, "sprite": "Sprites/Items/tin_can" },
+    { "id": "tire", "material": "plastic", "tags": ["flexible", "round", "perforated", "heavy"], "transforms": [ { "station": "saw", "into": "rubber_mat", "count": 2 } ], "dirtLevel": 4, "sprite": "Sprites/Items/tire" },
+    { "id": "rubber_mat", "material": "plastic", "tags": ["flat", "sturdy", "wide"], "dirtLevel": 0, "sprite": "Sprites/Items/rubber_mat" },
+    { "id": "bottle_cap", "material": "plastic", "tags": ["round", "flat"], "dirtLevel": 2, "sprite": "Sprites/Items/bottle_cap" },
+    { "id": "cardboard_box", "material": "paper", "tags": ["container", "flexible"], "dirtLevel": 2, "sprite": "Sprites/Items/cardboard_box" },
+    { "id": "newspaper", "material": "paper", "tags": ["flat", "flexible", "wide"], "dirtLevel": 2, "sprite": "Sprites/Items/newspaper" },
+    { "id": "tshirt", "material": "fabric", "tags": ["flexible", "flat", "wide"], "dirtLevel": 3, "sprite": "Sprites/Items/tshirt" },
+    { "id": "jeans", "material": "fabric", "tags": ["flexible"], "transforms": [ { "station": "scissors", "into": "rope", "count": 2 } ], "dirtLevel": 3, "sprite": "Sprites/Items/jeans" },
+    { "id": "rope", "material": "fabric", "tags": ["flexible", "long"], "dirtLevel": 0, "sprite": "Sprites/Items/rope" },
+    { "id": "plate", "material": "glass", "tags": ["flat", "round", "wide", "heavy"], "dirtLevel": 2, "sprite": "Sprites/Items/plate" },
+    { "id": "pallet_plank", "material": "wood", "tags": ["sturdy", "flat", "heavy", "wide"], "transforms": [ { "station": "saw", "into": "stick", "count": 2 } ], "dirtLevel": 3, "sprite": "Sprites/Items/pallet_plank" },
+    { "id": "stick", "material": "wood", "tags": ["long", "sturdy"], "dirtLevel": 2, "sprite": "Sprites/Items/stick" },
+    { "id": "cable", "material": "metal", "tags": ["flexible", "long", "conductive"], "dirtLevel": 3, "sprite": "Sprites/Items/cable" },
+    { "id": "cd", "material": "plastic", "tags": ["flat", "round", "perforated"], "dirtLevel": 2, "sprite": "Sprites/Items/cd" },
+    { "id": "bike_rim", "material": "metal", "tags": ["round", "perforated", "sturdy", "conductive"], "dirtLevel": 4, "sprite": "Sprites/Items/bike_rim" }
+  ]
+}

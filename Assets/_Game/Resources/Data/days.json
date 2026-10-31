@@ -1,0 +1,68 @@
+{
+  "days": [
+    {
+      "day": 1, "cleaningPoints": 1, "introCutscene": "truck_arrival",
+      "manifest": [ { "item": "water_bottle" }, { "item": "tin_can" } ],
+      "orders": [
+        { "customer": "zeynep", "product": "pen_holder", "textKey": "order.d1.zeynep", "pref": { "type": "tag_like", "value": "transparent" } }
+      ],
+      "walkIns": [],
+      "broughtItems": []
+    },
+    {
+      "day": 2, "cleaningPoints": 5, "introCutscene": "truck_arrival",
+      "manifest": [ { "item": "tin_can" }, { "item": "pallet_plank" }, { "item": "pallet_plank" }, { "item": "jeans" }, { "item": "tshirt" } ],
+      "orders": [
+        { "customer": "hatice_teyze", "product": "planter", "textKey": "order.d2.hatice", "pref": { "type": "material_like", "value": "fabric" } },
+        { "customer": "recep_amca", "product": "shelf", "textKey": "order.d2.recep", "pref": { "type": "material_like", "value": "wood" } }
+      ],
+      "walkIns": [],
+      "broughtItems": []
+    },
+    {
+      "day": 3, "cleaningPoints": 6, "introCutscene": "truck_arrival",
+      "manifest": [ { "item": "glass_bottle", "care": ["crack"] }, { "item": "water_bottle" }, { "item": "cable" }, { "item": "tire" }, { "item": "pallet_plank" }, { "item": "jeans" }, { "item": "cardboard_box" } ],
+      "orders": [
+        { "customer": "kemal_usta", "product": "lamp", "textKey": "order.d3.kemal", "pref": { "type": "material_like", "value": "glass" } },
+        { "customer": "zeynep", "product": "bird_feeder", "textKey": "order.d3.zeynep", "pref": { "type": "tag_like", "value": "transparent" } }
+      ],
+      "walkIns": [],
+      "broughtItems": []
+    },
+    {
+      "day": 4, "cleaningPoints": 8, "introCutscene": "truck_arrival",
+      "manifest": [ { "item": "cardboard_box" }, { "item": "glass_bottle" }, { "item": "bottle_cap" }, { "item": "bottle_cap" }, { "item": "stick" }, { "item": "pallet_plank" }, { "item": "jeans" }, { "item": "tin_can", "care": ["rust"] }, { "item": "plate", "care": ["crack"] }, { "item": "tire" } ],
+      "orders": [
+        { "customer": "deniz", "product": "toy_car", "textKey": "order.d4.deniz", "pref": { "type": "tag_like", "value": "transparent" } },
+        { "customer": "hatice_teyze", "product": "shelf", "textKey": "order.d4.hatice" }
+      ],
+      "walkIns": [
+        { "customer": "kemal_usta", "product": "planter", "textKey": "order.d4.kemal", "queueIndex": 2 }
+      ],
+      "broughtItems": []
+    },
+    {
+      "day": 5, "cleaningPoints": 8, "introCutscene": "truck_arrival",
+      "manifest": [ { "item": "glass_jar" }, { "item": "stick" }, { "item": "water_bottle" }, { "item": "tire" }, { "item": "cable" }, { "item": "jeans", "care": ["tear"] }, { "item": "jeans" }, { "item": "pallet_plank" }, { "item": "stick" }, { "item": "tin_can", "care": ["rust"] }, { "item": "cd" } ],
+      "orders": [
+        { "customer": "muhtar_selma", "product": "lamp", "hidden": true, "textKey": "order.d5.selma" },
+        { "customer": "kemal_usta", "product": "wind_chime", "hidden": true, "textKey": "order.d5.kemal" },
+        { "customer": "deniz", "product": "swing", "hidden": true, "textKey": "order.d5.deniz" }
+      ],
+      "walkIns": [],
+      "broughtItems": [ { "customer": "kemal_usta", "item": "bike_rim", "textKey": "brought.d5.kemal" } ]
+    },
+    {
+      "day": 6, "cleaningPoints": 10, "introCutscene": "truck_arrival",
+      "manifest": [ { "item": "pallet_plank" }, { "item": "tire" }, { "item": "jeans", "care": ["tear"] }, { "item": "jeans" }, { "item": "stick" }, { "item": "water_bottle", "care": ["crack"] }, { "item": "tin_can", "care": ["rust"] }, { "item": "newspaper" }, { "item": "tshirt" }, { "item": "cd", "care": ["crack"] }, { "item": "bike_rim", "care": ["rust"] }, { "item": "cardboard_box" } ],
+      "orders": [
+        { "customer": "muhtar_selma", "product": "swing", "textKey": "order.d6.swing" },
+        { "customer": "muhtar_selma", "product": "bird_feeder", "textKey": "order.d6.feeder" },
+        { "customer": "muhtar_selma", "product": "planter", "textKey": "order.d6.planter" },
+        { "customer": "muhtar_selma", "product": "wind_chime", "textKey": "order.d6.chime" }
+      ],
+      "walkIns": [],
+      "broughtItems": []
+    }
+  ]
+}

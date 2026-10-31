@@ -1,0 +1,17 @@
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Bb]uilds/
+/[Mm]emoryCaptures/
+*.csproj
+*.sln
+.vs/
+.vscode/
+crashlytics-build.properties
+
+# Araclar
+node_modules/
+ArtSource/out/

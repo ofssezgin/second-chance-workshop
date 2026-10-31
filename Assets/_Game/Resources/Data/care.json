@@ -1,0 +1,19 @@
+{
+  "baseTreatment": "wash",
+  "tools": [
+    { "id": "sponge", "color": "#1F6F6B", "unlockDay": 1 },
+    { "id": "glue", "color": "#C8553D", "unlockDay": 3 },
+    { "id": "sandpaper", "color": "#A0703F", "unlockDay": 4 },
+    { "id": "needle", "color": "#7A5C99", "unlockDay": 5 }
+  ],
+  "stations": [
+    { "id": "scissors", "unlockDay": 1, "bench": true },
+    { "id": "saw", "unlockDay": 3 }
+  ],
+  "treatments": [
+    { "id": "wash", "tool": "sponge", "mode": "rub", "shape": "stain", "color": "#4A3423", "sizeRatio": 0.36, "count": 0, "seconds": 1.2, "materials": [] },
+    { "id": "crack", "tool": "glue", "mode": "trace", "shape": "scratch", "color": "#1E1E1E", "sizeRatio": 0.6, "count": 2, "materials": ["glass", "plastic"] },
+    { "id": "rust", "tool": "sandpaper", "mode": "shake", "shape": "speckle", "color": "#C2622F", "sizeRatio": 0.36, "count": 3, "strokes": 6, "materials": ["metal"] },
+    { "id": "tear", "tool": "needle", "mode": "stitch", "shape": "scratch", "color": "#3A1F2B", "sizeRatio": 0.45, "count": 2, "materials": ["fabric"] }
+  ]
+}

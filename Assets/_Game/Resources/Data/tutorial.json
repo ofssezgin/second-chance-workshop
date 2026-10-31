@@ -1,0 +1,21 @@
+{
+  "day": 1,
+  "steps": [
+    { "textKey": "tutorial.look", "target": "door", "wait": "room_front", "anchor": [0.69, 0.125] },
+    { "textKey": "tutorial.read", "target": "customer", "wait": "room_back", "anchor": [0.5, 0.61] },
+    { "textKey": "tutorial.hover", "target": "crate", "wait": "item_hovered", "anchor": [0.69, 0.125] },
+    { "textKey": "tutorial.drag", "target": "sink", "wait": "wash_started", "anchor": [0.69, 0.125] },
+    { "textKey": "tutorial.tool", "target": "sink", "wait": "tool_selected", "anchor": [0.69, 0.125] },
+    { "textKey": "tutorial.scrub", "target": "sink", "wait": "wash_done", "anchor": [0.69, 0.125] },
+    { "textKey": "tutorial.cut", "target": "scissors", "wait": "item_cut", "anchor": [0.69, 0.125] },
+    { "textKey": "tutorial.door", "target": "door", "wait": "room_front", "anchor": [0.69, 0.125] },
+    { "textKey": "tutorial.deliver", "target": "delivery", "wait": "served", "anchor": [0.5, 0.61] },
+    { "textKey": "tutorial.end_day", "target": "end_day", "wait": "day_ended", "anchor": [0.5, 0.61] }
+  ],
+  "notices": [
+    { "signal": "day_open", "day": 2, "textKey": "notice.water" },
+    { "signal": "day_open", "day": 2, "textKey": "notice.materials" },
+    { "signal": "cleaned_scissors", "day": 2, "textKey": "notice.scissors" },
+    { "signal": "cleaned_saw", "day": 3, "textKey": "notice.saw" }
+  ]
+}

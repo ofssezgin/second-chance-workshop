@@ -1,0 +1,23 @@
+{
+  "materials": [
+    { "id": "plastic", "color": "#5B9BD5" },
+    { "id": "glass", "color": "#4FC3C7" },
+    { "id": "metal", "color": "#9AA0A6" },
+    { "id": "fabric", "color": "#E79AB8" },
+    { "id": "paper", "color": "#F2D15C" },
+    { "id": "wood", "color": "#A0703F" }
+  ],
+  "tags": [
+    { "id": "container" },
+    { "id": "transparent" },
+    { "id": "flexible", "opposite": "sturdy" },
+    { "id": "sturdy", "opposite": "flexible" },
+    { "id": "flat" },
+    { "id": "round" },
+    { "id": "conductive" },
+    { "id": "heavy" },
+    { "id": "perforated" },
+    { "id": "long" },
+    { "id": "wide" }
+  ]
+}
