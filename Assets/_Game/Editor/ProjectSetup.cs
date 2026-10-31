@@ -25,7 +25,7 @@ namespace CopAtolyesi.EditorTools
             PlayerSettings.productName = "Second Chance Workshop";
             PlayerSettings.defaultScreenWidth = 1280;
             PlayerSettings.defaultScreenHeight = 720;
-            PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
+            PlayerSettings.fullScreenMode = FullScreenMode.FullScreenWindow;
             PlayerSettings.runInBackground = true;
 
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
