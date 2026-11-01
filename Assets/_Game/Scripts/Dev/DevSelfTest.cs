@@ -66,7 +66,11 @@ namespace CopAtolyesi.Dev
             yield return Click(menu.Settings.ClosePoint);
             Check("ayarlar kapandi", !menu.Settings.IsOpen);
             if (playInEnglish) yield return Click(menu.LanguagePoint("en"));
-            Check("ana muzik caliyor", AudioKit.CurrentMusic == "music_main");
+            Check("ana muzik caliyor", AudioKit.CurrentMusic == "music_piano_1");
+            yield return new WaitForSecondsRealtime(1.5f);
+            AudioKit.SeekNearEndForTest();
+            yield return new WaitForSecondsRealtime(1f);
+            Check("sarkilar kesintisiz baglaniyor", AudioKit.CurrentMusic == "music_piano_2" && AudioKit.Crossfading);
             Check("efektler yuklendi", new[] { "click", "drop", "ding", "bell", "success", "error", "star" }.All(AudioKit.HasClip));
             Check("kamyon ve alet sesleri kaldirildi", !new[] { "truck", "saw", "scissors", "sponge", "sandpaper", "needle", "glue" }.Any(AudioKit.HasClip));
             yield return Shot("0a_menu");

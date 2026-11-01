@@ -20,5 +20,17 @@ namespace CopAtolyesi.EditorTools
             importer.alphaIsTransparency = true;
             if (assetPath.EndsWith("/belt.png")) importer.wrapMode = TextureWrapMode.Repeat;
         }
+
+        // Uzun muzikler bellege acilmadan sikistirilmis tutulur, acilis yavaslamaz.
+        void OnPreprocessAudio()
+        {
+            if (!assetPath.Contains("/Resources/Audio/music_piano")) return;
+            var importer = (AudioImporter)assetImporter;
+            var settings = importer.defaultSampleSettings;
+            settings.loadType = AudioClipLoadType.CompressedInMemory;
+            settings.compressionFormat = AudioCompressionFormat.Vorbis;
+            settings.quality = 0.7f;
+            importer.defaultSampleSettings = settings;
+        }
     }
 }

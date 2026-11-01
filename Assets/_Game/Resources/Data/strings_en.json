@@ -80,6 +80,7 @@
     { "key": "menu.credits.role", "value": "Developer & Designer" },
     { "key": "menu.credits.name", "value": "Osman Furkan Sezgin" },
     { "key": "menu.credits.mail", "value": "ofssezgin@gmail.com" },
+    { "key": "menu.credits.music", "value": "Music: andriih-piano (Pixabay)" },
     { "key": "menu.back", "value": "Back" },
     { "key": "menu.language", "value": "Language" },
     { "key": "ui.settings.title", "value": "Settings" },

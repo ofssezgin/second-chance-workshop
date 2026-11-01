@@ -1,4 +1,4 @@
-﻿// Oyunun muzik ve efektlerini uretir: node gen.mjs -> Assets/_Game/Resources/Audio/*.wav
+// Oyunun muzik ve efektlerini uretir: node gen.mjs -> Assets/_Game/Resources/Audio/*.wav
 // Sesler yalniz yumusak sinus dalgalaridir: keskin enstruman ve gurultu kullanilmaz.
 import * as fs from "node:fs/promises";
 
@@ -30,6 +30,7 @@ function notes(noteSeconds, ...frequencies) {
 
 const hz = (midi) => 440 * 2 ** ((midi - 69) / 12);
 
+// Ana muzik Resources/Audio/music_piano_*.mp3; bu dosya bitis muzikleri ve efektleri uretir.
 // Eski arpej sesi; notalar kesilmeden sonumlenip birbirine karisir. Dongu basa sarar.
 function pluck(target, start, frequency, gain) {
   const length = Math.floor(1.6 * RATE);
@@ -64,16 +65,10 @@ function song(noteSeconds, form, tune, shift = 0) {
 const a = ["C", "Am", "F", "G"];
 const b = ["Am", "F", "C", "G"];
 const c = ["F", "G", "Em", "Am"];
-const main = song(0.42, [...a, ...a, ...a, ...a, ...b, ...b, ...a, ...a, ...c, ...c], [
-  [8, 76, 1], [9, 72, 1], [10, 69, 1], [11, 74, 1], [12, 76, 1], [13, 72, 1], [14, 72, 1], [15, 71, 1],
-  [16, 72, 2], [18, 69, 2], [20, 76, 2], [22, 74, 2],
-  [24, 76, 1], [25, 72, 1], [26, 69, 1], [27, 74, 1], [28, 72, 2], [30, 71, 2],
-]);
 const good = song(0.36, [...a, "C", "G", "Am", "F", "C", "F", "G", "C"], [[0, 76, 2], [2, 79, 2], [4, 76, 2], [6, 72, 2], [8, 74, 2], [10, 72, 2]]);
 const dry = song(0.6, ["Am", "F", "Dm", "Am", "Am", "F", "Em", "Am"], [[2, 69, 2], [4, 72, 2], [6, 69, 2]], -12);
 
 await fs.mkdir(OUT, { recursive: true });
-await save("music_main", main);
 await save("music_good", good);
 await save("music_dry", dry);
 await save("click", notes(0.06, 660));

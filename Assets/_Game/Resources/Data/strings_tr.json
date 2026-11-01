@@ -80,6 +80,7 @@
     { "key": "menu.credits.role", "value": "Geliştirici ve Tasarımcı" },
     { "key": "menu.credits.name", "value": "Osman Furkan Sezgin" },
     { "key": "menu.credits.mail", "value": "ofssezgin@gmail.com" },
+    { "key": "menu.credits.music", "value": "Müzik: andriih-piano (Pixabay)" },
     { "key": "menu.back", "value": "Geri" },
     { "key": "menu.language", "value": "Dil" },
     { "key": "ui.settings.title", "value": "Ayarlar" },
