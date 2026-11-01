@@ -13,6 +13,7 @@ namespace CopAtolyesi.Core
         public readonly IReadOnlyList<TreatmentDef> Treatments;
         public readonly int Seed = nextSeed++;
         public bool IsClean;
+        public string GiftFrom;
         public ProductDef Product;
         public Dictionary<string, ItemInstance> Placed;
 
@@ -42,7 +43,14 @@ namespace CopAtolyesi.Core
             return new ItemInstance(Def, new TreatmentDef[0], true) { Product = Product, Placed = Placed };
         }
 
-        public string DisplayName => GameData.Text((Product != null ? "product." : "item.") + Def.id);
+        public string DisplayName
+        {
+            get
+            {
+                var name = GameData.Text((Product != null ? "product." : "item.") + Def.id);
+                return GiftFrom != null ? $"{name} ({GameData.Text("gift." + GiftFrom)})" : name;
+            }
+        }
 
         public bool HasTag(string tag) => Def.tags.Contains(tag);
 

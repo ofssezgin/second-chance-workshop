@@ -30,6 +30,7 @@ namespace CopAtolyesi.Core
         public int FinalStars => Math.Max(0, TotalStars - MissedPenalty);
         public bool WaterWasted => CleaningPoints < 0;
         public ItemInstance Washing { get; private set; }
+        public ItemInstance OnBench { get; private set; }
         public readonly List<ItemInstance> Waste = new List<ItemInstance>();
         public readonly List<ItemInstance> Shelf = new List<ItemInstance>();
         public readonly List<OrderDef> Queue = new List<OrderDef>();
@@ -49,7 +50,7 @@ namespace CopAtolyesi.Core
         public bool HasNextDay => GameData.Days.Any(d => d.day > DayNumber);
         public OrderDef CurrentOrder => Queue.Count > 0 ? Queue[0] : null;
         public bool CanPostpone => CurrentOrder != null && Queue.Count > 1 && !postponed.Contains(CurrentOrder);
-        public IReadOnlyList<ItemInstance> AvailableShelf => Shelf.Where(i => !Placements.ContainsValue(i)).ToList();
+        public IReadOnlyList<ItemInstance> AvailableShelf => Shelf.Where(i => !Placements.ContainsValue(i) && i != OnBench).ToList();
 
         public void StartDay(int dayNumber)
         {
@@ -60,6 +61,7 @@ namespace CopAtolyesi.Core
             StarsToday = 0;
             ServedToday = 0;
             Washing = null;
+            OnBench = null;
             // Temizlenmeyen atik kalir; bugunun atigi one gecer ki sandik dolsa da gorunur olsun.
             Waste.InsertRange(0, Day.manifest.Select(ItemInstance.FromManifest));
 
@@ -108,7 +110,7 @@ namespace CopAtolyesi.Core
             var brought = pendingBrought.FirstOrDefault(b => b.customer == CurrentOrder.customer);
             if (brought == null) return;
             pendingBrought.Remove(brought);
-            Shelf.Add(new ItemInstance(GameData.Items[brought.item], new TreatmentDef[0], true));
+            Shelf.Add(new ItemInstance(GameData.Items[brought.item], new TreatmentDef[0], true) { GiftFrom = brought.customer });
             ItemBrought?.Invoke(brought);
         }
 
@@ -132,7 +134,7 @@ namespace CopAtolyesi.Core
         // Basarisizsa oyuncuya gosterilecek metnin anahtarini, basarida null dondurur.
         public string BeginWash(ItemInstance item)
         {
-            var reason = Washing != null ? "feedback.sink_busy" : CleanBlockReason();
+            var reason = Washing != null || OnBench != null ? "feedback.sink_busy" : CleanBlockReason();
             if (reason != null) return reason;
             Washing = item;
             Changed?.Invoke();
@@ -140,9 +142,20 @@ namespace CopAtolyesi.Core
             return null;
         }
 
+        // Temiz esya kesmek icin masaya kondu; su harcamaz, rafa geri alinabilir.
+        public string PlaceOnBench(ItemInstance item)
+        {
+            if (Washing != null || OnBench != null) return "feedback.sink_busy";
+            OnBench = item;
+            Changed?.Invoke();
+            Signal("bench_placed");
+            return null;
+        }
+
         public void CancelWash()
         {
             Washing = null;
+            OnBench = null;
             Changed?.Invoke();
         }
 
@@ -225,6 +238,7 @@ namespace CopAtolyesi.Core
             var reason = CutBlockReason(stationId, item);
             if (reason != null) return reason;
 
+            if (OnBench == item) OnBench = null;
             var transform = item.TransformFor(stationId);
             if (item.Product != null) Replace(item, item.Placed.Values);
             else if (transform != null) Replace(item, Enumerable.Range(0, transform.count)
@@ -289,6 +303,7 @@ namespace CopAtolyesi.Core
         public void EndDay()
         {
             Washing = null;
+            OnBench = null;
             MissedCustomers += Queue.Count;
             foreach (var order in Queue) MissedBy.Add(order.customer);
             Queue.Clear();

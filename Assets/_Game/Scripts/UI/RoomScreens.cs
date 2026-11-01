@@ -24,6 +24,7 @@ namespace CopAtolyesi.UI
             UiKit.Pad(reminder, 0, AreaPadding + 3, AreaPadding + 3, config.hudHeight + 7);
             context.Reminder = OrderReminderView.Create(reminder, session);
             context.BackShelf = ItemGridView.Create(shelf, context, () => session.AvailableShelf, config.shelfCapacity, config.cleaningShelfColumns, true);
+            context.Targets["shelf_back"] = shelf;
 
             var counter = UiKit.Panel(room, "Counter", Vector2.zero, new Vector2(1, counterTop), Color(p => p.counter));
             UiKit.ApplyArt(counter, "Sprites/Rooms/back_counter");
@@ -58,6 +59,7 @@ namespace CopAtolyesi.UI
 
             var shelf = Station(counter.transform, "Shelf", "ui.area.shelf", Vector2.zero, new Vector2(config.shopShelfWidthRatio, 1));
             context.FrontShelf = ItemGridView.Create(shelf, context, () => session.AvailableShelf, config.shelfCapacity, config.shopShelfColumns, true);
+            context.Targets["shelf_front"] = shelf;
 
             var craft = Station(counter.transform, "CraftTable", "ui.area.craft", new Vector2(config.shopShelfWidthRatio, 0), Vector2.one);
             context.Craft = CraftTableView.Create(craft, context);

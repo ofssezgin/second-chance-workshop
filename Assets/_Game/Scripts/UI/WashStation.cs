@@ -21,7 +21,8 @@ namespace CopAtolyesi.UI
         }
     }
 
-    // Calisma masasi: atik buraya birakilir, buyur; oyuncu kenardaki aleti eline alip temizler.
+    // Calisma masasi: atik veya temiz esya buraya birakilir, buyur. Oyuncu soldaki aletle temizler,
+    // sagdaki makas ve testereyle keser.
     public sealed class WashStation : MonoBehaviour, IDropHandler
     {
         const float MinMoveSqr = 0.25f;
@@ -40,6 +41,8 @@ namespace CopAtolyesi.UI
         const int ConfettiCount = 28;
         const float ConfettiSeconds = 0.5f;
         const float ConfettiSpeed = 420f;
+        const float CutPunchScale = 1.08f;
+        const float CutPunchSpeed = 1.2f;
 
         sealed class ToolView
         {
@@ -60,6 +63,8 @@ namespace CopAtolyesi.UI
         readonly List<CareMark> marks = new List<CareMark>();
         ItemInstance current;
         ToolDef tool;
+        StationDef station;
+        int cutDone;
         Vector2 lastPointer;
         float strokeAnchorX;
         float strokeTime;
@@ -67,6 +72,7 @@ namespace CopAtolyesi.UI
 
         public string HintText => hint.text;
         public int CancelFrame { get; private set; } = -1;
+        bool Cutting => current != null && current == session.OnBench;
 
         public static WashStation Create(RectTransform content, UiContext context)
         {
@@ -137,15 +143,59 @@ namespace CopAtolyesi.UI
                 context.Toast.Show(GameData.Text("feedback.tool_no_item"));
                 return;
             }
+            if (Cutting)
+            {
+                context.Toast.Show(GameData.Text("feedback.item_clean"));
+                return;
+            }
             if (tool == def)
             {
                 ClearTool();
-                hint.text = GameData.Text("ui.sink.pick_tool");
+                hint.text = PickHint();
                 return;
             }
             SelectTool(def.id);
             session.Signal("tool_selected");
         }
+
+        // Makas ve testere de ele alinir; yalnizca masadaki temiz esyada ise yarar.
+        public void OnStationPressed(StationDef def)
+        {
+            if (!session.IsStationUnlocked(def))
+            {
+                context.Toast.Show(GameData.Text("feedback.tool_locked"));
+                return;
+            }
+            if (current == null)
+            {
+                context.Toast.Show(GameData.Text("feedback.tool_no_item"));
+                return;
+            }
+            if (station == def)
+            {
+                ClearTool();
+                hint.text = PickHint();
+                return;
+            }
+            if (!Cutting)
+            {
+                context.Toast.Show(GameData.Text("feedback.clean_first"));
+                return;
+            }
+            var reason = session.CutBlockReason(def.id, current);
+            if (reason != null)
+            {
+                context.Toast.Show(GameData.Text(reason));
+                return;
+            }
+            SelectStation(def.id);
+            session.Signal("station_selected");
+        }
+
+        string PickHint() => GameData.Text(Cutting ? "ui.bench.pick_tool" : "ui.sink.pick_tool");
+
+        string CutHint() => station == null ? PickHint()
+            : GameData.Text("ui.bench.use." + station.id, ("done", cutDone), ("total", station.strokes));
 
         // Kilitli alet gri siluettir; eldeki aletin yerinde soluk izi kalir.
         void RefreshTools()
@@ -180,40 +230,75 @@ namespace CopAtolyesi.UI
         public void OnDrop(PointerEventData eventData)
         {
             var source = eventData.pointerDrag != null ? eventData.pointerDrag.GetComponent<ItemDragSource>() : null;
-            if (source == null || source.DraggedItem == null || source.DraggedItem.IsClean) return;
+            if (source == null || source.DraggedItem == null) return;
+            var item = source.DraggedItem;
+            if (item.IsClean && !session.Shelf.Contains(item)) return;
+            if (!item.IsClean && WrongForTutorial(item))
+            {
+                context.Toast.Show(GameData.Text("feedback.tutorial_wrong_item"));
+                return;
+            }
             source.Accept();
-            var reason = session.BeginWash(source.DraggedItem);
+            var reason = item.IsClean ? session.PlaceOnBench(item) : session.BeginWash(item);
             if (reason != null) context.Toast.Show(GameData.Text(reason));
             else AudioKit.Play("drop");
+        }
+
+        // Rehber "isteğe uyan atigi" der: siparisin istedigi ozellik yoksa masaya kabul edilmez.
+        bool WrongForTutorial(ItemInstance item)
+        {
+            var order = session.CurrentOrder;
+            return context.Tutorial.Active && order != null && order.HasPref
+                && order.pref.type == "tag_like" && !item.HasTag(order.pref.value);
         }
 
         public void SelectTool(string id)
         {
             tool = GameData.Tools[id];
+            station = null;
             RefreshTools();
-            toolCursor.sprite = Resources.Load<Sprite>("Sprites/Tools/" + id);
+            SetCursor(id, tool.grip);
             if (current != null) hint.text = GameData.Text("ui.sink.use." + id);
+        }
+
+        public void SelectStation(string id)
+        {
+            station = GameData.Stations[id];
+            tool = null;
+            cutDone = 0;
+            RefreshTools();
+            SetCursor(id, null);
+            hint.text = CutHint();
+        }
+
+        // grip: aletin imlecle tutuldugu nokta; verilmezse aletin ortasidir.
+        void SetCursor(string id, float[] grip)
+        {
+            toolCursor.sprite = Resources.Load<Sprite>("Sprites/Tools/" + id);
+            toolCursor.rectTransform.pivot = grip != null && grip.Length == 2 ? new Vector2(grip[0], grip[1]) : new Vector2(0.5f, 0.5f);
         }
 
         void ClearTool()
         {
             tool = null;
+            station = null;
             toolCursor.gameObject.SetActive(false);
             RefreshTools();
         }
 
         void Refresh()
         {
-            if (session.Washing != current)
+            var next = session.Washing ?? session.OnBench;
+            if (next != current)
             {
-                current = session.Washing;
+                current = next;
                 ClearMarks();
                 ClearTool();
                 if (current != null)
                 {
                     stage.gameObject.SetActive(true);
                     itemView.Show(current, false);
-                    marks.AddRange(CareMarks.Build(itemView.MarksRoot, current));
+                    if (!Cutting) marks.AddRange(CareMarks.Build(itemView.MarksRoot, current));
                     foreach (var mark in marks.Where(m => m.Treatment.mode == "stitch"))
                     {
                         CareMarks.AddStitchDots(mark);
@@ -223,13 +308,14 @@ namespace CopAtolyesi.UI
             }
 
             stage.gameObject.SetActive(current != null);
-            cancelButton.SetActive(current != null);
+            cancelButton.SetActive(current != null && (context.Tutorial == null || !context.Tutorial.Active));
             RefreshTools();
             if (current == null) toolCursor.gameObject.SetActive(false);
 
             var blocked = session.CleanBlockReason();
             var idle = blocked ?? (session.CleaningPoints <= 0 ? "ui.sink.no_water" : "ui.sink.hint");
-            hint.text = GameData.Text(current == null ? idle
+            if (blocked != null && session.AvailableShelf.Count > 0) idle = "ui.bench.hint";
+            hint.text = Cutting ? CutHint() : GameData.Text(current == null ? idle
                 : tool != null ? "ui.sink.use." + tool.id : "ui.sink.pick_tool");
         }
 
@@ -253,9 +339,10 @@ namespace CopAtolyesi.UI
 
         void Update()
         {
-            if (current == null) return;
+            if (current == null || context.Notice.IsOpen || context.Settings.IsOpen || context.Notebook.IsOpen) return;
+            stage.localScale = Vector3.one * Mathf.MoveTowards(stage.localScale.x, 1f, CutPunchSpeed * Time.unscaledDeltaTime);
             var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
+            if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame && !context.Tutorial.Active)
             {
                 CancelFrame = Time.frameCount;
                 session.CancelWash();
@@ -266,13 +353,13 @@ namespace CopAtolyesi.UI
             if (mouse == null) return;
             var pointer = mouse.position.ReadValue();
 
-            if (tool != null && mouse.rightButton.wasPressedThisFrame)
+            if ((tool != null || station != null) && mouse.rightButton.wasPressedThisFrame)
             {
                 ClearTool();
-                hint.text = GameData.Text("ui.sink.pick_tool");
+                hint.text = PickHint();
             }
 
-            toolCursor.gameObject.SetActive(tool != null && toolCursor.sprite != null
+            toolCursor.gameObject.SetActive((tool != null || station != null) && toolCursor.sprite != null
                 && RectTransformUtility.RectangleContainsScreenPoint(content, pointer));
             toolCursor.transform.SetAsLastSibling();
             toolCursor.transform.position = pointer;
@@ -283,6 +370,36 @@ namespace CopAtolyesi.UI
             lastPointer = pointer;
             if (mouse.leftButton.isPressed && tool != null)
                 Work(previous, pointer, moved, stroke, mouse.leftButton.wasPressedThisFrame, Time.unscaledDeltaTime);
+            else if (mouse.leftButton.isPressed && station != null)
+                CutWork(pointer, stroke, mouse.leftButton.wasPressedThisFrame);
+        }
+
+        // Makas tiklamayla, testere ileri-geri hareketle kesilir; gereken sayiya ulasinca esya donusur.
+        void CutWork(Vector2 pointer, bool stroke, bool clicked)
+        {
+            var hit = station.mode == "shake" ? stroke : clicked;
+            if (!hit || !RectTransformUtility.RectangleContainsScreenPoint(stage, pointer)) return;
+
+            cutDone++;
+            AudioKit.Play("drop");
+            stage.localScale = Vector3.one * CutPunchScale;
+            if (cutDone < station.strokes)
+            {
+                hint.text = CutHint();
+                return;
+            }
+
+            var item = current;
+            var id = station.id;
+            ClearTool();
+            var reason = session.Cut(id, item);
+            if (reason != null)
+            {
+                context.Toast.Show(GameData.Text(reason));
+                return;
+            }
+            AudioKit.Play("ding");
+            StartCoroutine(Confetti());
         }
 
         // Yon degisimi bir zimpara darbesidir; yeterince uzun ve hizli olmayan hareket sayilmaz.
@@ -362,7 +479,7 @@ namespace CopAtolyesi.UI
                 AudioKit.Play("ding");
                 StartCoroutine(Confetti());
                 ClearTool();
-                hint.text = GameData.Text("ui.sink.pick_tool");
+                hint.text = PickHint();
             }
         }
 
@@ -475,6 +592,9 @@ namespace CopAtolyesi.UI
         }
 
         public string SelectedTool => tool != null ? tool.id : null;
+        public string SelectedStation => station != null ? station.id : null;
+        public Vector2 CursorPivot => toolCursor.rectTransform.pivot;
+        public bool CancelVisible => cancelButton.activeSelf;
 
         public Vector2 ToolPoint(string id)
         {

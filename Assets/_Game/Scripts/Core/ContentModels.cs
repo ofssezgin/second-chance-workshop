@@ -15,7 +15,6 @@ namespace CopAtolyesi.Core
         public int cleaningShelfColumns = 6;
         public float cleaningShelfWidthRatio = 0.75f;
         public int missedCustomerPenalty = 1;
-        public int monumentRows = 7;
         public float musicVolume = 0.22f;
         public float sfxVolume = 0.6f;
         public float shopShelfWidthRatio = 0.62f;
@@ -61,10 +60,11 @@ namespace CopAtolyesi.Core
 
     [Serializable] public sealed class MaterialDef { public string id; public string color; }
     [Serializable] public sealed class TagDef { public string id; public string opposite; }
-    [Serializable] public sealed class ToolDef { public string id; public string color; public int unlockDay; }
+    [Serializable] public sealed class ToolDef { public string id; public string color; public int unlockDay; public float[] grip; }
 
     // Dukkandaki kesme aletleri. bench: tek parcali urunleri yapar ve urunleri soker.
-    [Serializable] public sealed class StationDef { public string id; public int unlockDay; public bool bench; }
+    // mode: click (esyaya tiklama), shake (ileri-geri); strokes kac hareket gerektigini soyler.
+    [Serializable] public sealed class StationDef { public string id; public int unlockDay; public bool bench; public string mode; public int strokes; }
 
     // Esyanin bir aletle donustugu hal: bir esyadan count tane into cikar.
     [Serializable] public sealed class TransformDef { public string station; public string into; public int count = 1; }
@@ -181,6 +181,7 @@ namespace CopAtolyesi.Core
         public string textKey;
         public string target;
         public string wait;
+        public string[] allow;
         public float[] anchor;
     }
 

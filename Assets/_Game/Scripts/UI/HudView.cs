@@ -80,6 +80,7 @@ namespace CopAtolyesi.UI
         public Vector2 EndDayPoint => endDayImage.rectTransform.position;
         public Vector2 NotebookPoint => notebookRect.position;
         public Vector2 SettingsPoint => settingsRect.position;
+        public RectTransform SettingsRect => settingsRect;
         public RectTransform DoorRect => doorRect;
         public RectTransform EndDayRect => endDayImage.rectTransform;
 
@@ -91,7 +92,7 @@ namespace CopAtolyesi.UI
         void Refresh()
         {
             if (session.Day == null) return;
-            dayLabel.text = GameData.Text("ui.hud.day", ("day", session.DayNumber), ("title", GameData.Text($"day.{session.DayNumber}.title")));
+            dayLabel.text = GameData.Text($"day.{session.DayNumber}.title");
             waterLabel.text = GameData.Text("ui.hud.water", ("count", session.CleaningPoints));
             starsLabel.text = GameData.Text("ui.hud.stars", ("count", session.TotalStars));
             var palette = GameData.Config.palette;

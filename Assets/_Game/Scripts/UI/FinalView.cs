@@ -14,8 +14,7 @@ namespace CopAtolyesi.UI
         const int PropScale = 3;
         const int PortraitScale = 2;
         const float ProductSize = 96f;
-        const float MonumentBaseY = 258f;
-        const float MonumentItemGap = 30f;
+        const float MonumentBaseY = 240f;
         static readonly Color DryPark = new Color(0.85f, 0.72f, 0.5f);
 
         static readonly (string product, string art, float x, float y)[] Props =
@@ -99,28 +98,17 @@ namespace CopAtolyesi.UI
                     Sprite("Park/" + art, new Vector2(x, y), new Vector2(0.5f, 0), PropScale);
         }
 
-        // Eserler alttan uste daralan bir yigin olusturur; hepsi temiz halleriyle gorunur.
+        // Mahalle Aniti sabit bir heykeldir: atiktan agac ve meyve koparan robot.
+        // Su israf edildiyse agac kurumus, robot uzgundur ve heykel de parkla birlikte solar.
         void BuildMonument(GameSession session)
         {
-            var pedestal = Sprite("Park/pedestal", new Vector2(0.5f, 0), new Vector2(0.5f, 0), PropScale);
+            var bottom = new Vector2(0.5f, 0);
+            var pedestal = Sprite("Park/pedestal", bottom, bottom, PropScale);
             pedestal.rectTransform.anchoredPosition = new Vector2(0, MonumentBaseY - 60);
 
-            var rows = GameData.Config.monumentRows;
-            var index = 0;
-            for (var row = 0; row < rows && index < session.MonumentList.Count; row++)
-            {
-                var width = rows - row;
-                for (var i = 0; i < width && index < session.MonumentList.Count; i++, index++)
-                {
-                    var view = ItemView.Create(root);
-                    view.Show(session.MonumentList[index].CleanCopy());
-                    var rect = (RectTransform)view.transform;
-                    rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0);
-                    rect.pivot = new Vector2(0.5f, 0);
-                    rect.sizeDelta = Vector2.one * 48;
-                    rect.anchoredPosition = new Vector2((i - (width - 1) / 2f) * MonumentItemGap, MonumentBaseY + row * MonumentItemGap);
-                }
-            }
+            var monument = Sprite(session.WaterWasted ? "Park/monument_dry" : "Park/monument", bottom, bottom, PropScale);
+            monument.rectTransform.anchoredPosition = new Vector2(0, MonumentBaseY);
+            if (session.WaterWasted) monument.color = DryPark;
         }
 
         // Mahalleli parkin onunde yan yana durur; yaptigin urun elindedir ve sana tesekkur eder.
@@ -163,14 +151,16 @@ namespace CopAtolyesi.UI
             var top = new Vector2(0.5f, 1);
             var card = UiKit.Panel(root, "Card", top, top, GameData.ParseColor(palette.cream), true);
             card.rectTransform.pivot = top;
-            card.rectTransform.sizeDelta = new Vector2(760, 246);
+            card.rectTransform.sizeDelta = new Vector2(900, 246);
             card.rectTransform.anchoredPosition = new Vector2(0, -8);
 
             var titleArea = UiKit.Area(card.transform, "Title", new Vector2(0, 0.82f), Vector2.one);
             title = UiKit.Label(titleArea, "Text", titleText, 28, ink);
+            UiKit.UseDisplayFont(title);
             var linesArea = UiKit.Area(card.transform, "Lines", new Vector2(0, 0.2f), new Vector2(1, 0.82f));
             lines = UiKit.Label(linesArea, "Text", linesText, 17, ink);
             lines.textWrappingMode = TextWrappingModes.Normal;
+            UiKit.UseDisplayFont(lines);
             UiKit.Pad(lines.rectTransform, 16, 0, 16, 0);
 
             var continueButton = UiKit.Button(card.transform, "Continue", buttonText, new Vector2(0.35f, 0.03f), new Vector2(0.65f, 0.19f), out buttonLabel);

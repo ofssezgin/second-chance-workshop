@@ -83,6 +83,7 @@ namespace CopAtolyesi.EditorTools
             {
                 Need("tool." + station);
                 Need($"tool.{station}.desc");
+                Need("ui.bench.use." + station);
             }
             foreach (var item in GameData.Items.Values)
                 foreach (var transform in item.transforms ?? new TransformDef[0])
@@ -112,6 +113,7 @@ namespace CopAtolyesi.EditorTools
                         else if (GameData.Tools[treatment.tool].unlockDay > day.day) errors.Add($"Gun {day.day}: {care} icin {treatment.tool} henuz kilitli");
                     }
                 foreach (var order in day.orders.Concat(day.walkIns ?? new OrderDef[0])) Need(order.textKey);
+                foreach (var brought in day.broughtItems ?? new BroughtItemDef[0]) Need("gift." + brought.customer);
             }
         }
 

@@ -25,6 +25,9 @@ namespace CopAtolyesi.UI
         TMP_Text creditsRole;
         TMP_Text creditsName;
         TMP_Text creditsMail;
+        TMP_Text creditsRole2;
+        TMP_Text creditsName2;
+        TMP_Text creditsMail2;
         TMP_Text creditsMusic;
         TMP_Text backLabel;
         GameObject creditsPanel;
@@ -81,17 +84,24 @@ namespace CopAtolyesi.UI
             var dim = UiKit.Panel(parent, "CreditsPanel", Vector2.zero, Vector2.one, new Color(0, 0, 0, 0.6f));
             creditsPanel = dim.gameObject;
 
-            var card = UiKit.Panel(dim.transform, "Card", new Vector2(0.28f, 0.2f), new Vector2(0.72f, 0.8f), GameData.ParseColor(GameData.Config.palette.cream), true);
+            var card = UiKit.Panel(dim.transform, "Card", new Vector2(0.18f, 0.2f), new Vector2(0.82f, 0.8f), GameData.ParseColor(GameData.Config.palette.cream), true);
             creditsTitle = UiKit.Label(UiKit.Area(card.transform, "Title", new Vector2(0, 0.79f), new Vector2(1, 0.97f)), "Text", string.Empty, 40, ink);
-            creditsRole = UiKit.Label(UiKit.Area(card.transform, "Role", new Vector2(0, 0.67f), new Vector2(1, 0.77f)), "Text", string.Empty, 22, ink);
-            creditsName = UiKit.Label(UiKit.Area(card.transform, "Name", new Vector2(0, 0.54f), new Vector2(1, 0.67f)), "Text", string.Empty, 32, ink);
-            creditsMail = UiKit.Label(UiKit.Area(card.transform, "Mail", new Vector2(0, 0.44f), new Vector2(1, 0.54f)), "Text", string.Empty, 22, ink);
+            (creditsRole, creditsName, creditsMail) = PersonColumn(card.transform, 0, 0.5f, ink);
+            (creditsRole2, creditsName2, creditsMail2) = PersonColumn(card.transform, 0.5f, 1, ink);
             creditsMusic = UiKit.Label(UiKit.Area(card.transform, "Music", new Vector2(0, 0.3f), new Vector2(1, 0.4f)), "Text", string.Empty, 20, ink);
 
             var back = UiKit.Button(card.transform, "Back", string.Empty, new Vector2(0.3f, 0.07f), new Vector2(0.7f, 0.24f), out backLabel);
             back.onClick.AddListener(() => creditsPanel.SetActive(false));
             backRect = back.GetComponent<RectTransform>();
             creditsPanel.SetActive(false);
+        }
+
+        static (TMP_Text role, TMP_Text name, TMP_Text mail) PersonColumn(Transform card, float left, float right, Color ink)
+        {
+            var role = UiKit.Label(UiKit.Area(card, "Role", new Vector2(left, 0.67f), new Vector2(right, 0.77f)), "Text", string.Empty, 22, ink);
+            var name = UiKit.Label(UiKit.Area(card, "Name", new Vector2(left, 0.54f), new Vector2(right, 0.67f)), "Text", string.Empty, 30, ink);
+            var mail = UiKit.Label(UiKit.Area(card, "Mail", new Vector2(left, 0.44f), new Vector2(right, 0.54f)), "Text", string.Empty, 22, ink);
+            return (role, name, mail);
         }
 
         void BuildLanguageRow(Transform parent, Color ink)
@@ -128,6 +138,9 @@ namespace CopAtolyesi.UI
             creditsRole.text = GameData.Text("menu.credits.role");
             creditsName.text = GameData.Text("menu.credits.name");
             creditsMail.text = GameData.Text("menu.credits.mail");
+            creditsRole2.text = GameData.Text("menu.credits.role2");
+            creditsName2.text = GameData.Text("menu.credits.name2");
+            creditsMail2.text = GameData.Text("menu.credits.mail2");
             creditsMusic.text = GameData.Text("menu.credits.music");
             backLabel.text = GameData.Text("menu.back");
             quitLabel.text = GameData.Text("menu.quit");

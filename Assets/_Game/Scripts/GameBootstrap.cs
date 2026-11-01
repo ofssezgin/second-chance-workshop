@@ -66,6 +66,7 @@ namespace CopAtolyesi
             var hud = HudView.Create(canvas, context, () => rooms.Toggle(), RequestEndDay, context.Notebook.Toggle, () => context.Settings.Toggle());
             context.Targets["door"] = hud.DoorRect;
             context.Targets["end_day"] = hud.EndDayRect;
+            context.Targets["settings"] = hud.SettingsRect;
             context.Tutorial = TutorialView.Create(overlay, context);
             context.Summary = SummaryView.Create(overlay);
             context.Final = FinalView.Create(overlay);
@@ -101,7 +102,7 @@ namespace CopAtolyesi
             var day = session.Day;
             var water = GameData.Text("ui.intro.water", ("water", session.CleaningPoints), ("waste", day.manifest.Length));
             var lines = $"{GameData.Text($"day.{day.day}.note")}\n\n{water}";
-            var title = GameData.Text("ui.intro.title", ("day", day.day), ("title", GameData.Text($"day.{day.day}.title")));
+            var title = GameData.Text($"day.{day.day}.title");
             void ShowCard() => context.Summary.Show(title, lines, GameData.Text("ui.intro.open"), () =>
             {
                 if (day.day == GameData.Tutorial.day) context.Tutorial.Begin();
@@ -134,7 +135,7 @@ namespace CopAtolyesi
             {
                 var lines = GameData.Text("ui.summary.lines", ("served", served), ("total", total), ("stars", stars),
                     ("shelf", session.Shelf.Count), ("waste", session.Waste.Count), ("water", session.CleaningPoints));
-                context.Summary.Show(GameData.Text("ui.summary.day", ("day", day)), lines, GameData.Text("ui.summary.next"),
+                context.Summary.Show(GameData.Text("ui.summary.day", ("title", GameData.Text($"day.{day}.title"))), lines, GameData.Text("ui.summary.next"),
                     () => StartCoroutine(BeginDay(day + 1)));
                 return;
             }
@@ -154,6 +155,12 @@ namespace CopAtolyesi
         {
             var keyboard = Keyboard.current;
             if (keyboard == null || cutscenes == null || cutscenes.Playing || context.Notice.IsOpen || context.Settings.IsOpen) return;
+            if (context.Tutorial.Active) return;
+            if (context.Notebook.IsOpen && keyboard.escapeKey.wasPressedThisFrame)
+            {
+                context.Notebook.Toggle();
+                return;
+            }
             var panelOpen = context.Summary.gameObject.activeSelf || context.Final.gameObject.activeSelf;
             if (keyboard.escapeKey.wasPressedThisFrame && !panelOpen && session.Washing == null
                 && context.Wash.CancelFrame != Time.frameCount)

@@ -14,7 +14,7 @@ namespace CopAtolyesi.UI
         const float MaxSeconds = 600f;
         const float DayLabelHeight = 130f;
         const float FactTop = 112f;
-        const float FactBottom = 206f;
+        const float FactBottom = 216f;
         const float SourceHeight = 26f;
         const float BeltSurface = 0.86f;
 
@@ -91,16 +91,17 @@ namespace CopAtolyesi.UI
             var area = UiKit.Area(root, "DayLabel", new Vector2(0, 1), Vector2.one);
             area.offsetMin = new Vector2(0, -DayLabelHeight);
             area.offsetMax = Vector2.zero;
-            UiKit.Label(area, "Text", GameData.Text("ui.cutscene.day", ("day", session.DayNumber)), 56, ink);
+            UiKit.Label(area, "Text", GameData.Text($"day.{session.DayNumber}.title"), 56, ink);
 
-            var factArea = UiKit.Area(root, "Fact", new Vector2(0.1f, 1), new Vector2(0.9f, 1));
+            var factArea = UiKit.Area(root, "Fact", new Vector2(0.06f, 1), new Vector2(0.94f, 1));
             factArea.offsetMin = new Vector2(0, -FactBottom);
             factArea.offsetMax = new Vector2(0, -FactTop);
             var fact = UiKit.Label(factArea, "Text", GameData.Text("ui.summary.fact",
-                ("fact", GameData.Text($"day.{session.DayNumber}.fact"))), 21, ink, TMPro.TextAlignmentOptions.Top);
+                ("fact", GameData.Text($"day.{session.DayNumber}.fact"))), 25, ink, TMPro.TextAlignmentOptions.Top);
             fact.textWrappingMode = TMPro.TextWrappingModes.Normal;
+            UiKit.UseDisplayFont(fact);
 
-            var sourceArea = UiKit.Area(root, "Source", new Vector2(0.1f, 1), new Vector2(0.9f, 1));
+            var sourceArea = UiKit.Area(root, "Source", new Vector2(0.06f, 1), new Vector2(0.94f, 1));
             sourceArea.offsetMin = new Vector2(0, -FactBottom - SourceHeight);
             sourceArea.offsetMax = new Vector2(0, -FactBottom);
             UiKit.Label(sourceArea, "Text", GameData.Text($"day.{session.DayNumber}.source"), 18, ink, TMPro.TextAlignmentOptions.MidlineRight);

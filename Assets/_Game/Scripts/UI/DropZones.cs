@@ -2,25 +2,22 @@ using CopAtolyesi.Core;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace CopAtolyesi.UI
 {
-    // Kesme aleti (makas, testere): rafa ait esya uzerine birakilir. Islenebilecek esya tutulup
-    // uzerine gelinince alet buyur ve renklenir; kilitliyse gri siluet kalir.
-    public sealed class WorkshopStation : MonoBehaviour, IDropHandler
+    // Kesme aleti (makas, testere): masanin saginda durur, basilinca ele gecer ve masadaki esyada kullanilir.
+    // Eldeyken yerinde soluk izi kalir ve renklenir; kilitliyse gri siluet kalir.
+    public sealed class WorkshopStation : MonoBehaviour
     {
         const float Size = 128f;
         const float Gap = 8f;
-        const float HoverScale = 1.18f;
-        const float ScaleSpeed = 3f;
-        const float HoverAlpha = 0.55f;
+        const float HeldAlpha = 0.55f;
+        const float HeldIconAlpha = 0.25f;
         static readonly Color IdleColor = new Color(0, 0, 0, 0.22f);
 
         UiContext context;
         StationDef def;
-        RectTransform rect;
         Image panel;
         Image icon;
         Sprite art;
@@ -39,8 +36,8 @@ namespace CopAtolyesi.UI
             var view = panel.gameObject.AddComponent<WorkshopStation>();
             view.context = context;
             view.def = def;
-            view.rect = panel.rectTransform;
             view.panel = panel;
+            panel.gameObject.AddComponent<ToolPickup>().Pressed = () => context.Wash.OnStationPressed(def);
 
             var center = new Vector2(0.5f, 0.6f);
             view.icon = UiKit.Panel(panel.transform, "Icon", center, center, Color.white);
@@ -75,29 +72,12 @@ namespace CopAtolyesi.UI
 
         void Update()
         {
-            var item = ItemDragSource.Current != null ? ItemDragSource.Current.DraggedItem : null;
-            var mouse = Mouse.current;
-            Highlighted = item != null && mouse != null
-                && RectTransformUtility.RectangleContainsScreenPoint(rect, mouse.position.ReadValue())
-                && context.Session.CutBlockReason(def.id, item) == null;
-
-            var hover = GameData.ParseColor(GameData.Config.palette.mustard);
-            hover.a = HoverAlpha;
-            panel.color = Highlighted ? hover : IdleColor;
-            var scale = Mathf.MoveTowards(rect.localScale.x, Highlighted ? HoverScale : 1f, ScaleSpeed * Time.unscaledDeltaTime);
-            rect.localScale = Vector3.one * scale;
-        }
-
-        public void OnDrop(PointerEventData eventData)
-        {
-            var source = eventData.pointerDrag != null ? eventData.pointerDrag.GetComponent<ItemDragSource>() : null;
-            if (source == null || source.DraggedItem == null) return;
-            if (!context.Session.Shelf.Contains(source.DraggedItem)) return;
-
-            source.Accept();
-            var reason = context.Session.Cut(def.id, source.DraggedItem);
-            if (reason != null) context.Toast.Show(GameData.Text(reason));
-            else AudioKit.Play("drop");
+            Highlighted = context.Wash.SelectedStation == def.id;
+            var held = GameData.ParseColor(GameData.Config.palette.mustard);
+            held.a = HeldAlpha;
+            panel.color = Highlighted ? held : IdleColor;
+            if (!context.Session.IsStationUnlocked(def)) return;
+            icon.color = new Color(1, 1, 1, Highlighted ? HeldIconAlpha : 1);
         }
     }
 

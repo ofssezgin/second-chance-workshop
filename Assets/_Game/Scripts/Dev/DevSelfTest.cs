@@ -66,7 +66,7 @@ namespace CopAtolyesi.Dev
             yield return Click(menu.Settings.ClosePoint);
             Check("ayarlar kapandi", !menu.Settings.IsOpen);
             if (playInEnglish) yield return Click(menu.LanguagePoint("en"));
-            Check("ana muzik caliyor", AudioKit.CurrentMusic == "music_piano_1");
+            Check("ana muzik caliyor", AudioKit.CurrentMusic == "music_piano_1" && AudioKit.HasClip("music_piano_3"));
             yield return new WaitForSecondsRealtime(1.5f);
             AudioKit.SeekNearEndForTest();
             yield return new WaitForSecondsRealtime(1f);
@@ -99,24 +99,38 @@ namespace CopAtolyesi.Dev
             yield return ToggleRoom(switcher);
             Check("bakilan musteri temizlikte gorunur", session.IsCurrentOrderSeen);
 
-            var pileItem = PileItem();
+            var pileItem = PileItem(i => i.HasTag("transparent"));
             yield return MoveTo(pileItem.position, false);
             yield return new WaitForSecondsRealtime(0.6f);
             Check("etiket ipucu acildi", context.Tooltip.gameObject.activeSelf);
 
             var sinkCenter = (Vector2)((RectTransform)context.Wash.transform).position;
+            yield return Drag(PileItem().position, new Vector2(10, Screen.height / 2f));
+            Check("gecersiz birakma yerinde birakir", session.Washing == null && session.Waste.Count == 2);
+            yield return Drag(PileItem(i => !i.HasTag("transparent")).position, sinkCenter);
+            Check("rehber istege uymayan atigi almaz", session.Washing == null);
+            yield return Drag(PileItem(i => !i.HasTag("transparent")).position, new Vector2(80, 120));
+
+            var stepKey = context.Tutorial.CurrentKey;
+            session.Signal("room_front");
+            session.Signal("item_cut");
+            Check("rehber adim atlamaz", context.Tutorial.CurrentKey == stepKey);
+            yield return Click(HudNotebookPoint());
+            Check("rehberde kilitli yer calismaz", !context.Notebook.IsOpen);
+            yield return Click(FindAnyObjectByType<HudView>().EndDayPoint);
+            Check("rehberde gun bitirilemez", context.Tutorial.Active && !context.Summary.gameObject.activeSelf);
+
+            pileItem = PileItem(i => i.HasTag("transparent"));
+            var item = pileItem.GetComponent<ItemView>().Item;
             yield return Drag(pileItem.position, sinkCenter);
-            Check("masaya birakildi", session.Washing != null);
+            Check("masaya birakildi", session.Washing == item);
             Check("alet otomatik secilmedi", context.Wash.SelectedTool == null);
+            Check("rehberde vazgec yok", !context.Wash.CancelVisible);
             session.CancelWash();
             yield return null;
             Check("iptal ucretsiz", session.Washing == null && session.CleaningPoints == 1);
-
-            yield return Drag(PileItem().position, new Vector2(10, Screen.height / 2f));
-            Check("gecersiz birakma yerinde birakir", session.Washing == null && session.Waste.Count == 2);
-
-            yield return Drag(PileItem().position, sinkCenter);
-            var item = session.Washing;
+            session.BeginWash(item);
+            yield return null;
             yield return Click(context.Wash.ToolPoint("sponge"));
             Check("sunger ele alindi ve elde kaldi", context.Wash.SelectedTool == "sponge");
             yield return Click(context.Wash.ToolPoint("sponge"));
@@ -128,19 +142,23 @@ namespace CopAtolyesi.Dev
 
             yield return new WaitForSecondsRealtime(0.5f);
             var scissors = context.Targets["scissors"].GetComponent<WorkshopStation>();
-            yield return MoveTo(context.BackShelf.CellRect(0).position, false);
-            yield return MoveTo(context.BackShelf.CellRect(0).position, true);
-            yield return MoveTo(ScissorsPoint(), true);
-            yield return new WaitForSecondsRealtime(0.15f);
-            Check("makas uzerine gelince vurgulandi", scissors.Highlighted && scissors.transform.localScale.x > 1.05f);
+            yield return Click(ScissorsPoint());
+            Check("masa bosken makas alinmaz", context.Wash.SelectedStation == null);
+            yield return Drag(context.BackShelf.CellRect(0).position, sinkCenter);
+            Check("temiz esya su harcamadan masaya kondu", session.OnBench == item && session.CleaningPoints == 0);
+            yield return Click(ScissorsPoint());
+            Check("makas ele alindi", context.Wash.SelectedStation == "scissors" && scissors.Highlighted);
             yield return Shot("1a_scissors_hover");
-            yield return MoveTo(ScissorsPoint(), false);
+            yield return Click(sinkCenter);
+            Check("makas tek tikla kesmez", session.OnBench == item);
+            yield return Click(sinkCenter);
+            yield return Click(sinkCenter);
             yield return new WaitForSecondsRealtime(0.1f);
-            Check("makas kalemlik yapti", session.Shelf.Count == 1 && session.Shelf[0].Product != null);
+            Check("makas uc tikla kalemlik yapti", session.OnBench == null && session.Shelf.Count == 1 && session.Shelf[0].Product != null);
             yield return new WaitForSecondsRealtime(0.1f);
             yield return Shot("1a_pen_holder_on_shelf");
 
-            yield return Click(HudNotebookPoint());
+            context.Notebook.Toggle();
             context.Notebook.TurnForTest(4);
             yield return new WaitForSecondsRealtime(0.4f);
             yield return Shot("1b_transforms_day1");
@@ -158,7 +176,9 @@ namespace CopAtolyesi.Dev
             Check("teslim edildi", session.Queue.Count == 0 && session.TotalStars >= 1 && session.Shelf.Count == 0);
             Check("musteri dogru tepki verdi", view.SpeechText.Contains(GameData.Text("customer.zeynep." + expected)));
             yield return new WaitForSecondsRealtime(1f);
+            Check("birlestirme notu cikti", context.Notice.IsOpen && context.Notice.Message == GameData.Text("notice.craft"));
             yield return Shot("1e_served");
+            yield return DismissNotices();
             yield return new WaitForSecondsRealtime(1.8f);
 
             var hud = FindAnyObjectByType<HudView>();
@@ -183,6 +203,10 @@ namespace CopAtolyesi.Dev
             Check("su uyarisi tusa kadar kaldi", context.Notice.IsOpen);
             Check("kalan su gune eklendi", session.CleaningPoints == GameData.Days[0].cleaningPoints - 1 + GameData.Days[1].cleaningPoints);
             yield return Shot("1g_water_notice");
+            yield return Click(new Vector2(640, 40));
+            Check("not disari tiklayinca kapanmaz", context.Notice.IsOpen);
+            yield return TapEscape();
+            Check("not tusla kapanmaz", context.Notice.IsOpen);
             yield return DismissNotices();
             Check("gun 2'de yalniz sunger acik", !context.Wash.IsToolShownLocked("sponge") && context.Wash.IsToolShownLocked("glue"));
             yield return Drag(PileItem().position, (Vector2)((RectTransform)context.Wash.transform).position);
@@ -205,7 +229,8 @@ namespace CopAtolyesi.Dev
             yield return Click(hud.NotebookPoint);
             Check("defter acildi", context.Notebook.gameObject.activeSelf);
             yield return Shot("1j_notebook");
-            context.Notebook.Toggle();
+            yield return TapEscape();
+            Check("esc defteri kapatti", !context.Notebook.IsOpen && !context.Pause.gameObject.activeSelf);
 
             // Gun 2: elle temizleyip iki parcali urun yap, yanlis parcayi geri al, sokup yeniden yap.
             var plank = session.Waste.First(i => i.Def.id == "pallet_plank");
@@ -351,10 +376,37 @@ namespace CopAtolyesi.Dev
             yield return null;
             yield return Shot("3d_tear");
             context.Wash.SelectTool("needle");
+            Check("igne ucundan tutuluyor", context.Wash.CursorPivot.x < 0.3f && context.Wash.CursorPivot.y < 0.3f);
             yield return ScrubAll();
             Check("igne noktalara tiklayarak dikti", session.Washing == null && torn.IsClean);
             yield return DismissNotices();
             yield return new WaitForSecondsRealtime(0.5f);
+
+            var sawn = session.Waste.First(i => i.Def.id == "tire");
+            session.Shelf.RemoveRange(0, 3);
+            session.TryClean(sawn);
+            Check("testere icin esya temiz ve rafta", sawn.IsClean && session.Shelf.Contains(sawn));
+            yield return null;
+            yield return DismissNotices();
+            Check("testere masadaki esyaya alinir", session.PlaceOnBench(sawn) == null);
+            yield return null;
+            yield return Click(context.Targets["saw"].position);
+            Check("testere ele alindi", context.Wash.SelectedStation == "saw");
+            yield return Shot("3e_saw_in_hand");
+            var sawCenter = (Vector2)((RectTransform)context.Wash.transform).position;
+            var sawLimit = Time.unscaledTime + 8f;
+            var sawOffset = 24f;
+            while (session.OnBench != null && Time.unscaledTime < sawLimit)
+            {
+                sawOffset = -sawOffset;
+                Send(sawCenter + new Vector2(sawOffset, 0), true);
+                yield return new WaitForSecondsRealtime(0.05f);
+            }
+            Send(pointer, false);
+            yield return null;
+            Check("testere surterek kesti", session.OnBench == null && session.Shelf.Any(i => i.Def.id == "rubber_mat"));
+            var gift = new ItemInstance(GameData.Items["bike_rim"], new TreatmentDef[0], true) { GiftFrom = "kemal_usta" };
+            Check("hediye adinda hediye eden yaziyor", gift.DisplayName.Contains(GameData.Text("gift.kemal_usta")));
 
             session.Delivered["recep_amca"] = ItemInstance.MakeProduct(GameData.Products["shelf"], new Dictionary<string, ItemInstance> { { "board", plank } });
             session.Delivered["zeynep"] = ItemInstance.MakeProduct(GameData.Products["pen_holder"], new Dictionary<string, ItemInstance> { { "body", cracked } });
@@ -389,7 +441,17 @@ namespace CopAtolyesi.Dev
 
         IEnumerator DismissNotices()
         {
-            while (context.Notice.IsOpen) yield return Click(new Vector2(640, 40));
+            while (context.Notice.IsOpen) yield return Click(context.Notice.NextPoint);
+            yield return null;
+        }
+
+        IEnumerator TapEscape()
+        {
+            InputSystem.QueueStateEvent(Keyboard.current, new UnityEngine.InputSystem.LowLevel.KeyboardState(Key.Escape));
+            yield return null;
+            yield return null;
+            InputSystem.QueueStateEvent(Keyboard.current, new UnityEngine.InputSystem.LowLevel.KeyboardState());
+            yield return null;
             yield return null;
         }
 
@@ -415,9 +477,10 @@ namespace CopAtolyesi.Dev
             yield return new WaitForSecondsRealtime(0.3f);
         }
 
-        RectTransform PileItem() =>
+        RectTransform PileItem(System.Func<ItemInstance, bool> match = null) =>
             (RectTransform)FindObjectsByType<ItemDragSource>(FindObjectsSortMode.None)
-                .First(s => s.GetComponentInParent<WastePileView>() != null).transform;
+                .First(s => s.GetComponentInParent<WastePileView>() != null
+                    && (match == null || match(s.GetComponent<ItemView>().Item))).transform;
 
         IEnumerator Click(Vector2 target)
         {

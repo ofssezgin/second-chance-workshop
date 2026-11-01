@@ -7,7 +7,9 @@ namespace CopAtolyesi
     // Muzik ve efektler Resources/Audio altindan yuklenir. Iki muzik kaynagi sarkilari kesintisiz birbirine bagliyor.
     public sealed class AudioKit : MonoBehaviour
     {
-        static readonly string[] Playlist = { "music_piano_1", "music_piano_2" };
+        static readonly string[] Playlist = { "music_piano_1", "music_piano_2", "music_piano_3" };
+        // Parcalarin dolu duydugu son an (saniye): gecis, sondaki sonumleme baslamadan biter, arada bosluk olmaz.
+        static readonly float[] PlaylistEnds = { 131.25f, 133f, 108f };
         const float WorkInterval = 0.24f;
         const float TrackFadeSeconds = 5f;
         const float StartFadeSeconds = 1.5f;
@@ -74,7 +76,7 @@ namespace CopAtolyesi
         public static string CurrentMusic => instance != null && instance.Active.isPlaying ? instance.Active.clip.name : null;
         public static bool Crossfading => instance != null && instance.fading && instance.Other.isPlaying;
         public static bool HasClip(string name) => instance != null && instance.clips.ContainsKey(name);
-        public static void SeekNearEndForTest() => instance.Active.time = instance.Active.clip.length - TrackFadeSeconds + 0.1f;
+        public static void SeekNearEndForTest() => instance.Active.time = PlaylistEnds[instance.track] - TrackFadeSeconds + 0.1f;
 
         void Build()
         {
@@ -121,7 +123,7 @@ namespace CopAtolyesi
                     fading = false;
                 }
             }
-            else if (playlistOn && Active.clip.length - Active.time <= TrackFadeSeconds)
+            else if (playlistOn && Active.time >= PlaylistEnds[track] - TrackFadeSeconds)
             {
                 track = (track + 1) % Playlist.Length;
                 Crossfade(clips[Playlist[track]], false, TrackFadeSeconds);

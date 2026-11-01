@@ -87,6 +87,8 @@ namespace CopAtolyesi.UI
             tabImages[target] = button.GetComponent<Image>();
         }
 
+        public bool IsOpen => gameObject.activeSelf;
+
         public void Toggle()
         {
             var open = !gameObject.activeSelf;

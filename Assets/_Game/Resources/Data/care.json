@@ -4,11 +4,11 @@
     { "id": "sponge", "color": "#1F6F6B", "unlockDay": 1 },
     { "id": "glue", "color": "#C8553D", "unlockDay": 3 },
     { "id": "sandpaper", "color": "#A0703F", "unlockDay": 4 },
-    { "id": "needle", "color": "#7A5C99", "unlockDay": 5 }
+    { "id": "needle", "color": "#7A5C99", "unlockDay": 5, "grip": [0.14, 0.16] }
   ],
   "stations": [
-    { "id": "scissors", "unlockDay": 1, "bench": true },
-    { "id": "saw", "unlockDay": 3 }
+    { "id": "scissors", "unlockDay": 1, "bench": true, "mode": "click", "strokes": 3 },
+    { "id": "saw", "unlockDay": 3, "mode": "shake", "strokes": 5 }
   ],
   "treatments": [
     { "id": "wash", "tool": "sponge", "mode": "rub", "shape": "stain", "color": "#4A3423", "sizeRatio": 0.36, "count": 0, "seconds": 1.2, "materials": [] },

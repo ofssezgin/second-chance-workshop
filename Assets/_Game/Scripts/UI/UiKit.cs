@@ -8,6 +8,8 @@ namespace CopAtolyesi.UI
     // Arayuz koddan kurulur: yerlesim oranlari config.json'dan gelir, sahnede elle ayar gerekmez.
     public static class UiKit
     {
+        static TMP_FontAsset displayFont;
+
         static Sprite roundedSprite;
         static Sprite circleSprite;
 
@@ -78,6 +80,13 @@ namespace CopAtolyesi.UI
             button.onClick.AddListener(() => AudioKit.Play("click"));
             label = Label(image.transform, "Label", text, 18, GameData.ParseColor(palette.cream));
             return button;
+        }
+
+        // One cikmasi gereken yazilarin fontu; Turkce harfleri eksiksiz olan Paytone One.
+        public static void UseDisplayFont(TMP_Text label)
+        {
+            if (displayFont == null) displayFont = TMP_FontAsset.CreateFontAsset(Resources.Load<Font>("Fonts/PaytoneOne-Regular"));
+            label.font = displayFont;
         }
 
         // Sag ust koseye oturan disli dugmesi.
