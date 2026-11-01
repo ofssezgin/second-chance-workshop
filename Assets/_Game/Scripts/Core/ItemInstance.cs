@@ -10,7 +10,7 @@ namespace CopAtolyesi.Core
         static int nextSeed = 1;
 
         public readonly ItemDef Def;
-        public readonly IReadOnlyList<TreatmentDef> Treatments;
+        public IReadOnlyList<TreatmentDef> Treatments { get; private set; }
         public readonly int Seed = nextSeed++;
         public bool IsClean;
         public string GiftFrom;
@@ -53,6 +53,8 @@ namespace CopAtolyesi.Core
         }
 
         public bool HasTag(string tag) => Def.tags.Contains(tag);
+
+        public void AddCare(TreatmentDef treatment) => Treatments = Treatments.Append(treatment).ToList();
 
         public TransformDef TransformFor(string station) =>
             Product != null ? null : (Def.transforms ?? new TransformDef[0]).FirstOrDefault(t => t.station == station);

@@ -69,7 +69,7 @@
     { "key": "feedback.item_clean", "value": "Bu eşya zaten temiz." },
     { "key": "feedback.clean_first", "value": "Önce eşyayı temizle." },
     { "key": "ui.notice.next", "value": "Geç" },
-    { "key": "gift.kemal_usta", "value": "Kemal Usta'nın hediyesi" },
+    { "key": "gift.muhtar_selma", "value": "Muhtar Selma'nın hediyesi" },
     { "key": "tutorial.deliver", "value": "Kalemliği raftan konuşmanın yanındaki boşluğa sürükle." },
     { "key": "order.d3.zeynep", "value": "Balkona kuş geliyor! Bir yemlik yapar mısın? İçi görünürse doluluğunu takip ederim." },
     { "key": "order.d4.hatice", "value": "Mutfağıma da bir raf yapsana evladım." },
@@ -278,7 +278,7 @@
     { "key": "order.d6.feeder", "value": "Şimdi de kuşlarımızı düşünelim: bir kuş yemliği." },
     { "key": "order.d6.planter", "value": "Parka biraz yeşillik lazım, bir saksı yapalım." },
     { "key": "order.d6.chime", "value": "Son olarak girişe bir rüzgâr çanı. Sonra çaylar benden!" },
-    { "key": "brought.d5.kemal", "value": "Bu jant bende duruyordu, atmaya kıyamadım. Bir işine yarar mı?" },
+    { "key": "brought.d5.selma", "value": "Bu jant bende duruyordu, atmaya kıyamadım. Bir işine yarar mı?" },
 
     { "key": "day.1.title", "value": "İlk Gün" },
     { "key": "day.2.title", "value": "Ün Yayılıyor" },

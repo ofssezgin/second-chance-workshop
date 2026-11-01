@@ -69,7 +69,7 @@
     { "key": "feedback.item_clean", "value": "This item is already clean." },
     { "key": "feedback.clean_first", "value": "Clean the item first." },
     { "key": "ui.notice.next", "value": "Next" },
-    { "key": "gift.kemal_usta", "value": "gift from Kemal Usta" },
+    { "key": "gift.muhtar_selma", "value": "gift from Headwoman Selma" },
     { "key": "tutorial.deliver", "value": "Drag the pen holder from the shelf to the space beside the speech bubble." },
     { "key": "order.d3.zeynep", "value": "Birds visit my balcony! Can you make a feeder? A transparent one would let me see how full it is." },
     { "key": "order.d4.hatice", "value": "Make a shelf for my kitchen too, dear." },
@@ -278,7 +278,7 @@
     { "key": "order.d6.feeder", "value": "Now let's think of our birds: a bird feeder." },
     { "key": "order.d6.planter", "value": "The park needs some green, let's make a planter." },
     { "key": "order.d6.chime", "value": "Finally, a wind chime for the entrance. Then the tea is on me!" },
-    { "key": "brought.d5.kemal", "value": "I had this rim lying around, couldn't bear to toss it. Any use to you?" },
+    { "key": "brought.d5.selma", "value": "I had this rim lying around, couldn't bear to toss it. Any use to you?" },
 
     { "key": "day.1.title", "value": "First Day" },
     { "key": "day.2.title", "value": "Word Gets Around" },

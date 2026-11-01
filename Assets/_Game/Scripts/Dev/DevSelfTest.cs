@@ -316,6 +316,8 @@ namespace CopAtolyesi.Dev
             yield return new WaitForSecondsRealtime(0.2f);
             Check("temizlenmeyen atik sonraki gunlere kaldi", session.Waste.Contains(leftover));
             Check("alet kilidi acilis gununde kalkti", !context.Wash.IsToolShownLocked("needle"));
+            Check("butun metallerde pas var", session.Waste.Where(i => i.Def.material == "metal").All(i => i.Treatments.Any(t => t.id == "rust")));
+            Check("butun pantolonlarda yirtik var", session.Waste.Where(i => i.Def.id == "jeans").All(i => i.Treatments.Any(t => t.id == "tear")));
             yield return Shot("3a_pile");
 
             yield return Click(hud.NotebookPoint);
@@ -371,6 +373,7 @@ namespace CopAtolyesi.Dev
             Check("zimpara ileri-geri ile temizledi", session.Washing == null && sanded.IsClean);
             yield return new WaitForSecondsRealtime(0.5f);
 
+            session.Shelf.RemoveRange(0, 2);
             var torn = session.Waste.First(i => i.Treatments.Any(t => t.id == "tear"));
             session.BeginWash(torn);
             yield return null;
@@ -405,8 +408,8 @@ namespace CopAtolyesi.Dev
             Send(pointer, false);
             yield return null;
             Check("testere surterek kesti", session.OnBench == null && session.Shelf.Any(i => i.Def.id == "rubber_mat"));
-            var gift = new ItemInstance(GameData.Items["bike_rim"], new TreatmentDef[0], true) { GiftFrom = "kemal_usta" };
-            Check("hediye adinda hediye eden yaziyor", gift.DisplayName.Contains(GameData.Text("gift.kemal_usta")));
+            var gift = new ItemInstance(GameData.Items["bike_rim"], new TreatmentDef[0], true) { GiftFrom = "muhtar_selma" };
+            Check("hediye adinda hediye eden yaziyor", gift.DisplayName.Contains(GameData.Text("gift.muhtar_selma")));
 
             session.Delivered["recep_amca"] = ItemInstance.MakeProduct(GameData.Products["shelf"], new Dictionary<string, ItemInstance> { { "board", plank } });
             session.Delivered["zeynep"] = ItemInstance.MakeProduct(GameData.Products["pen_holder"], new Dictionary<string, ItemInstance> { { "body", cracked } });

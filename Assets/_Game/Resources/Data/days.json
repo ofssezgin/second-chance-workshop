@@ -50,7 +50,7 @@
         { "customer": "deniz", "product": "swing", "hidden": true, "textKey": "order.d5.deniz" }
       ],
       "walkIns": [],
-      "broughtItems": [ { "customer": "kemal_usta", "item": "bike_rim", "textKey": "brought.d5.kemal" } ]
+      "broughtItems": [ { "customer": "muhtar_selma", "item": "bike_rim", "textKey": "brought.d5.selma" } ]
     },
     {
       "day": 6, "cleaningPoints": 10, "introCutscene": "truck_arrival",

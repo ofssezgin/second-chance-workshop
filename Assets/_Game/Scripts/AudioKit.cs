@@ -9,7 +9,7 @@ namespace CopAtolyesi
     {
         static readonly string[] Playlist = { "music_piano_1", "music_piano_2", "music_piano_3" };
         // Parcalarin dolu duydugu son an (saniye): gecis, sondaki sonumleme baslamadan biter, arada bosluk olmaz.
-        static readonly float[] PlaylistEnds = { 131.25f, 133f, 108f };
+        static readonly float[] PlaylistEnds = { 131.25f, 133f, 109.75f };
         const float WorkInterval = 0.24f;
         const float TrackFadeSeconds = 5f;
         const float StartFadeSeconds = 1.5f;

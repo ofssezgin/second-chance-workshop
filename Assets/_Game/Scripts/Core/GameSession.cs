@@ -64,6 +64,7 @@ namespace CopAtolyesi.Core
             OnBench = null;
             // Temizlenmeyen atik kalir; bugunun atigi one gecer ki sandik dolsa da gorunur olsun.
             Waste.InsertRange(0, Day.manifest.Select(ItemInstance.FromManifest));
+            AddUnlockedCare();
 
             BuildQueue();
             pendingBrought.Clear();
@@ -74,6 +75,15 @@ namespace CopAtolyesi.Core
             ReceiveBroughtItem();
             MarkOrderSeen();
             Changed?.Invoke();
+        }
+
+        // Aleti acilan bakim isi, sandiktaki eski atiklar dahil o malzemedeki her esyada gorulur.
+        void AddUnlockedCare()
+        {
+            foreach (var treatment in GameData.Treatments.Values.Where(t => GameData.Tools[t.tool].unlockDay <= DayNumber))
+                foreach (var item in Waste.Where(i => !i.Treatments.Contains(treatment)
+                    && ((treatment.autoMaterials ?? new string[0]).Contains(i.Def.material) || (treatment.autoItems ?? new string[0]).Contains(i.Def.id))))
+                    item.AddCare(treatment);
         }
 
         public void Signal(string name) => Signaled?.Invoke(name);

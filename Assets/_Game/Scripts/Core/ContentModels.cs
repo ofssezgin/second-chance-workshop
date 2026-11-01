@@ -84,6 +84,9 @@ namespace CopAtolyesi.Core
         public float seconds;
         public int strokes;
         public string[] materials;
+        // Aleti acildiktan sonra bu malzeme veya esyalarin hepsinde gorulen bakim isi.
+        public string[] autoMaterials;
+        public string[] autoItems;
     }
 
     [Serializable]
