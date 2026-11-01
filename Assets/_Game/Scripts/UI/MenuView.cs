@@ -67,6 +67,10 @@ namespace CopAtolyesi.UI
             var quit = UiKit.Button(background.transform, "Quit", string.Empty, new Vector2(RowLeft, 0.35f), new Vector2(RowRight, 0.43f), out view.quitLabel);
             quit.onClick.AddListener(Application.Quit);
             view.quitRect = quit.GetComponent<RectTransform>();
+#if UNITY_WEBGL && !UNITY_EDITOR
+            // Tarayicida oyundan cikilamaz; sekme kapatilir.
+            quit.gameObject.SetActive(false);
+#endif
 
             view.BuildLanguageRow(background.transform, ink);
             view.BuildCredits(background.transform, ink);

@@ -57,6 +57,24 @@ namespace CopAtolyesi.EditorTools
             if (Application.isBatchMode) EditorApplication.Exit(report.summary.result == BuildResult.Succeeded ? 0 : 1);
         }
 
+        [MenuItem("Cop Atolyesi/Web Build")]
+        public static void BuildWeb()
+        {
+            PlayerSettings.WebGL.template = "PROJECT:SecondChance";
+            PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Gzip;
+            // Sunucu ayarina bagli kalmamak icin sikistirmayi tarayici acar.
+            PlayerSettings.WebGL.decompressionFallback = true;
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = new[] { ScenePath },
+                locationPathName = "Builds/Web",
+                target = BuildTarget.WebGL,
+                options = BuildOptions.None
+            });
+            Debug.Log($"Build sonucu: {report.summary.result}");
+            if (Application.isBatchMode) EditorApplication.Exit(report.summary.result == BuildResult.Succeeded ? 0 : 1);
+        }
+
         [MenuItem("Cop Atolyesi/Windows Dev Build")]
         public static void BuildWindowsDev()
         {

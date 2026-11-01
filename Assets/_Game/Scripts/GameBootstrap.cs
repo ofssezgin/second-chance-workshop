@@ -27,7 +27,7 @@ namespace CopAtolyesi
         void Awake()
         {
             GameData.Load();
-#if !UNITY_EDITOR && !DEVELOPMENT_BUILD
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD && !UNITY_WEBGL
             // Unity son pencere boyutunu kaydettigi icin ekran modu her acilista zorlanir.
             Screen.SetResolution(Display.main.systemWidth, Display.main.systemHeight, FullScreenMode.FullScreenWindow);
 #endif
